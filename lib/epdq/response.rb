@@ -4,7 +4,9 @@ require 'cgi'
 module EPDQ
   class Response
 
-    def initialize(query_string)
+    def initialize(query_string, account = nil)
+      @account = account || EPDQ.default_account
+
       raw_parameters = CGI::parse(query_string)
       # collapse the array that CGI::parse produces for each value
       raw_parameters.each do |k, v|
@@ -32,7 +34,7 @@ module EPDQ
     private
 
     def calculated_sha_out
-      calculator = EPDQ::ShaCalculator.new(@raw_parameters, EPDQ.sha_out, EPDQ.sha_type)
+      calculator = EPDQ::ShaCalculator.new(@raw_parameters, @account.sha_out, @account.sha_type)
       calculator.sha_signature
     end
 
