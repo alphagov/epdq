@@ -11,8 +11,8 @@ module EPDQ
     # Initialize with a hash of parameters to be passed to ePDQ to set up the
     # transaction.
     def initialize(parameters = {})
-      @parameters = parameters.reject {|k,v| k == :account }
-      @account = parameters[:account] || EPDQ.default_account
+      @account = parameters.delete(:account) || EPDQ.default_account
+      @parameters = parameters
     end
 
     # Returns the SHASIGN value, calculated from the other form parameters and
