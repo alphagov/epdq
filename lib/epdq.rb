@@ -4,12 +4,20 @@ require 'epdq/response'
 
 module EPDQ
 
+  def self.accounts
+    @@accounts ||= { }
+  end
+
+  def self.accounts=(accounts)
+    @@accounts = accounts
+  end
+
   def self.default_account
-    @@default_account ||= EPDQ::Account.new
+    self.accounts[:default] ||= EPDQ::Account.new
   end
 
   def self.default_account=(account)
-    @@default_account = account
+    self.accounts[:default] = account
   end
 
   def self.test_mode=(test_mode)

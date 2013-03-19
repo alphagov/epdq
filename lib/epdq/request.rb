@@ -11,7 +11,7 @@ module EPDQ
     # Initialize with a hash of parameters to be passed to ePDQ to set up the
     # transaction.
     def initialize(parameters = {})
-      @account = parameters.delete(:account) || EPDQ.default_account
+      @account = EPDQ.accounts[parameters.delete(:account)] || EPDQ.default_account
       @parameters = parameters
     end
 
