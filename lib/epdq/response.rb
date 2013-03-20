@@ -4,13 +4,19 @@ require 'cgi'
 module EPDQ
   class Response
 
-    def initialize(query_string, account = nil)
+    def initialize(query_string, account = nil, additional_param_keys = [])
       @account = account || EPDQ.default_account
+      @additional_parameters = {}
 
       raw_parameters = CGI::parse(query_string)
       # collapse the array that CGI::parse produces for each value
+      # and extract additional non-sha parameters
       raw_parameters.each do |k, v|
-        raw_parameters[k] = v.first
+        if additional_param_keys.include?(k)
+          @additional_parameters[k] = raw_parameters.delete(k).first
+        else
+          raw_parameters[k] = v.first
+        end
       end
 
       @shasign = raw_parameters.delete("SHASIGN")
@@ -25,7 +31,7 @@ module EPDQ
 
     def parameters
       {}.tap do |hash|
-        @raw_parameters.each do |k, v|
+        @raw_parameters.merge(@additional_parameters).each do |k, v|
           hash[k.downcase.to_sym] = v
         end
       end
