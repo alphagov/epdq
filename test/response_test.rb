@@ -43,9 +43,9 @@ class ResponseTest < Test::Unit::TestCase
   test "an account object can be provided to override the defaults" do
     query_string = "ACCEPTANCE=1234&AMOUNT=15.00&BRAND=VISA&CARDNO=xxxxxxxxxxxx1111&CURRENCY=EUR&NCERROR=0&ORDERID=12&PAYID=32100123&PM=CreditCard&STATUS=9&SHASIGN=2DA17DFC1B92327FD6847746DA173B418BDAAC0F"
 
-    account = EPDQ::Account.new( :test_mode => true, :sha_out => "outoutout", :pspid => "AnotherPSPID", :sha_type => :sha1 )
+    EPDQ.accounts[:test] = EPDQ::Account.new( :test_mode => true, :sha_out => "outoutout", :pspid => "AnotherPSPID", :sha_type => :sha1 )
 
-    response = EPDQ::Response.new(query_string, account)
+    response = EPDQ::Response.new(query_string, :test)
     assert response.valid_shasign?
   end
 

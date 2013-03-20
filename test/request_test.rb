@@ -91,10 +91,10 @@ class RequestTest < Test::Unit::TestCase
   end
 
   test "an account object can be provided to override the defaults" do
-    account = EPDQ::Account.new( :test_mode => true, :sha_in => "ininin", :pspid => "AnotherPSPID", :sha_type => :sha1 )
+    EPDQ.accounts[:test] = EPDQ::Account.new( :test_mode => true, :sha_in => "ininin", :pspid => "AnotherPSPID", :sha_type => :sha1 )
 
     options = {
-      :account => account,
+      :account => :test,
       :amount => 1500,
       :currency => "EUR",
       :language => "en_US",

@@ -5,7 +5,7 @@ module EPDQ
   class Response
 
     def initialize(query_string, account = nil, additional_param_keys = [])
-      @account = account || EPDQ.default_account
+      @account = EPDQ.accounts[account] || EPDQ.default_account
       @additional_parameters = {}
 
       raw_parameters = CGI::parse(query_string)
