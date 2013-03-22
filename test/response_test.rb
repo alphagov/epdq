@@ -40,4 +40,25 @@ class ResponseTest < Test::Unit::TestCase
     assert_equal "9", parameters[:status]
   end
 
+  test "an account object can be provided to override the defaults" do
+    query_string = "ACCEPTANCE=1234&AMOUNT=15.00&BRAND=VISA&CARDNO=xxxxxxxxxxxx1111&CURRENCY=EUR&NCERROR=0&ORDERID=12&PAYID=32100123&PM=CreditCard&STATUS=9&SHASIGN=2DA17DFC1B92327FD6847746DA173B418BDAAC0F"
+
+    EPDQ.accounts[:test] = EPDQ::Account.new( :test_mode => true, :sha_out => "outoutout", :pspid => "AnotherPSPID", :sha_type => :sha1 )
+
+    response = EPDQ::Response.new(query_string, :test)
+    assert response.valid_shasign?
+  end
+
+  test "additional parameter keys can be provided to pass non-sha values in the response" do
+    query_string = "ACCEPTANCE=1234&AMOUNT=15.00&BRAND=VISA&CARDNO=xxxxxxxxxxxx1111&CURRENCY=EUR&NCERROR=0&ORDERID=12&PAYID=32100123&PM=CreditCard&STATUS=9&SHASIGN=8DC2A769700CA4B3DF87FE8E3B6FD162D6F6A5FA&order_item_count=4&postage=yes"
+
+    response = EPDQ::Response.new(query_string, nil, ['order_item_count', 'postage', 'another_param_key'])
+    parameters = response.parameters
+
+    assert_equal "4", parameters[:order_item_count]
+    assert_equal "yes", parameters[:postage]
+    assert !parameters.has_key?(:another_param_key)
+
+  end
+
 end

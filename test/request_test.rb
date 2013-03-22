@@ -20,7 +20,7 @@ class RequestTest < Test::Unit::TestCase
 
     request = EPDQ::Request.new(options)
 
-    assert_equal "F4CC376CD7A834D997B91598FA747825A238BE0A", request.shasign 
+    assert_equal "F4CC376CD7A834D997B91598FA747825A238BE0A", request.shasign
   end
 
   test "shasign (sha256) calculates correctly" do
@@ -35,7 +35,7 @@ class RequestTest < Test::Unit::TestCase
 
     request = EPDQ::Request.new(options)
 
-    assert_equal "E019359BAA3456AE5A986B6AABD22CF1B3E09438739E97F17A7F61DF5A11B30F", request.shasign 
+    assert_equal "E019359BAA3456AE5A986B6AABD22CF1B3E09438739E97F17A7F61DF5A11B30F", request.shasign
   end
 
   test "shasign (sha512) calculates correctly" do
@@ -50,7 +50,7 @@ class RequestTest < Test::Unit::TestCase
 
     request = EPDQ::Request.new(options)
 
-    assert_equal "D1CFE8833A297D0922E908B2B44934B09EE966EF1584DC0D696304E07BB58BA71973C2383C831D878D8A243BB7D7DFFFBE53CEE21955CDFEF44FE82E551F859D", request.shasign 
+    assert_equal "D1CFE8833A297D0922E908B2B44934B09EE966EF1584DC0D696304E07BB58BA71973C2383C831D878D8A243BB7D7DFFFBE53CEE21955CDFEF44FE82E551F859D", request.shasign
   end
 
   test "form_attributes" do
@@ -79,15 +79,31 @@ class RequestTest < Test::Unit::TestCase
   test "request_url in test mode" do
     EPDQ.test_mode = true
     request = EPDQ::Request.new
-    
+
     assert_equal EPDQ::Request::TEST_URL, request.request_url
   end
 
   test "request_url in live mode" do
     EPDQ.test_mode = false
     request = EPDQ::Request.new
-    
+
     assert_equal EPDQ::Request::LIVE_URL, request.request_url
+  end
+
+  test "an account object can be provided to override the defaults" do
+    EPDQ.accounts[:test] = EPDQ::Account.new( :test_mode => true, :sha_in => "ininin", :pspid => "AnotherPSPID", :sha_type => :sha1 )
+
+    options = {
+      :account => :test,
+      :amount => 1500,
+      :currency => "EUR",
+      :language => "en_US",
+      :orderid => "1234"
+    }
+    request = EPDQ::Request.new(options)
+
+    assert_equal EPDQ::Request::TEST_URL, request.request_url
+    assert_equal "A724E81D5C7A3E915A671BB3220F2225000E11DC", request.shasign
   end
 
 end
