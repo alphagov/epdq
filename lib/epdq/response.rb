@@ -3,38 +3,27 @@ require 'cgi'
 
 module EPDQ
   class Response
+    attr_reader :raw_parameters, :signature
 
     def initialize(query_string)
-      raw_parameters = CGI::parse(query_string)
-      # collapse the array that CGI::parse produces for each value
-      raw_parameters.each do |k, v|
-        raw_parameters[k] = v.first
-      end
-
-      @shasign = raw_parameters.delete("SHASIGN")
-      @raw_parameters = raw_parameters
+      @raw_parameters = Hash[CGI.parse(query_string).map  { |k,v| [k, v.first] }]
+      @signature      = raw_parameters.delete("SHASIGN")
     end
 
-    def valid_shasign?
-      raise "missing or empty SHASIGN parameter" unless @shasign && @shasign.length > 0
+    def valid_signature?
+      raise "missing or empty SHASIGN parameter" unless signature && signature.length > 0
 
-      calculated_sha_out == @shasign
+      calculated_sha_out == signature
     end
 
     def parameters
-      {}.tap do |hash|
-        @raw_parameters.each do |k, v|
-          hash[k.downcase.to_sym] = v
-        end
-      end
+      Hash[raw_parameters.map { |k, v| [k.downcase.to_sym, v] }]
     end
 
     private
 
     def calculated_sha_out
-      calculator = EPDQ::ShaCalculator.new(@raw_parameters, EPDQ.sha_out, EPDQ.sha_type)
-      calculator.sha_signature
+      EPDQ::ShaCalculator.new(raw_parameters, EPDQ.sha_out, EPDQ.sha_type).signature
     end
-
   end
 end

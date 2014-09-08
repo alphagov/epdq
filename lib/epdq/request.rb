@@ -2,7 +2,6 @@ require 'epdq/sha_calculator'
 
 module EPDQ
   class Request
-
     attr_reader :parameters
 
     TEST_URL = "https://mdepayments.epdq.co.uk/ncol/test/orderstandard.asp"
@@ -16,22 +15,15 @@ module EPDQ
 
     # Returns the SHASIGN value, calculated from the other form parameters and
     # the EPDQ.sha_in.
-    def shasign
-      calculator = EPDQ::ShaCalculator.new(full_parameters, EPDQ.sha_in, EPDQ.sha_type)
-      calculator.sha_signature
+    def signature
+      EPDQ::ShaCalculator.new(full_parameters, EPDQ.sha_in, EPDQ.sha_type).signature
     end
 
     # Returns a hash of form parameters with the SHASIGN value correctly
     # calculated and included.
     def form_attributes
-      {}.tap do |attributes|
-        full_parameters.each do |k, v|
-          if v && v.to_s.length > 0
-            attributes[k.to_s.upcase] = v.to_s
-          end
-        end
-
-        attributes["SHASIGN"] = self.shasign
+      full_parameters.each_with_object({ "SHASIGN" => signature }) do |(k, v), attributes|
+        attributes[k.to_s.upcase] = v.to_s if v.to_s.length > 0
       end
     end
 
@@ -42,8 +34,7 @@ module EPDQ
     private
 
     def full_parameters
-      @parameters.merge({ :pspid => EPDQ.pspid })
+      parameters.merge pspid: EPDQ.pspid
     end
-
   end
 end
