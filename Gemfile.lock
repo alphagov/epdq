@@ -4,8 +4,9 @@ PATH
     epdq (0.0.1)
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
+    rake (10.3.2)
     test-unit (2.5.3)
 
 PLATFORMS
@@ -13,4 +14,5 @@ PLATFORMS
 
 DEPENDENCIES
   epdq!
+  rake
   test-unit (~> 2.5.3)

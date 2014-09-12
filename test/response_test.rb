@@ -7,18 +7,18 @@ class ResponseTest < Test::Unit::TestCase
     EPDQ.sha_out = "Mysecretsig1875!?"
   end
 
-  test "valid_sha?" do
+  test "valid_signature?" do
     query_string = "ACCEPTANCE=1234&AMOUNT=15.00&BRAND=VISA&CARDNO=xxxxxxxxxxxx1111&CURRENCY=EUR&NCERROR=0&ORDERID=12&PAYID=32100123&PM=CreditCard&STATUS=9&SHASIGN=8DC2A769700CA4B3DF87FE8E3B6FD162D6F6A5FA"
 
     response = EPDQ::Response.new(query_string)
-    assert response.valid_shasign?
+    assert response.valid_signature?
   end
 
-  test "valid_sha? with mixed case keys" do
+  test "valid_signature? with mixed case keys" do
     query_string = "ACCEPTANCE=1234&AMOUNT=15.00&brand=VISA&CARDNO=xxxxxxxxxxxx1111&CURRENCY=EUR&ncerror=0&ORDERID=12&PAYID=32100123&PM=CreditCard&STATUS=9&SHASIGN=8DC2A769700CA4B3DF87FE8E3B6FD162D6F6A5FA"
 
     response = EPDQ::Response.new(query_string)
-    assert response.valid_shasign?
+    assert response.valid_signature?
   end
 
   test "parameters" do

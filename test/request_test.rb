@@ -8,7 +8,7 @@ class RequestTest < Test::Unit::TestCase
     EPDQ.sha_type = :sha1
   end
 
-  test "shasign (sha1) calculates correctly" do
+  test "signature (sha1) calculates correctly" do
     # this sample taken from the documentation available here:
     # https://mdepayments.epdq.co.uk/ncol/ePDQ_e-Com-ADV_EN.pdf
     options = {
@@ -20,10 +20,10 @@ class RequestTest < Test::Unit::TestCase
 
     request = EPDQ::Request.new(options)
 
-    assert_equal "F4CC376CD7A834D997B91598FA747825A238BE0A", request.shasign 
+    assert_equal "F4CC376CD7A834D997B91598FA747825A238BE0A", request.signature
   end
 
-  test "shasign (sha256) calculates correctly" do
+  test "signature (sha256) calculates correctly" do
     EPDQ.sha_type = :sha256
 
     options = {
@@ -35,10 +35,10 @@ class RequestTest < Test::Unit::TestCase
 
     request = EPDQ::Request.new(options)
 
-    assert_equal "E019359BAA3456AE5A986B6AABD22CF1B3E09438739E97F17A7F61DF5A11B30F", request.shasign 
+    assert_equal "E019359BAA3456AE5A986B6AABD22CF1B3E09438739E97F17A7F61DF5A11B30F", request.signature
   end
 
-  test "shasign (sha512) calculates correctly" do
+  test "signature (sha512) calculates correctly" do
     EPDQ.sha_type = :sha512
 
     options = {
@@ -50,7 +50,7 @@ class RequestTest < Test::Unit::TestCase
 
     request = EPDQ::Request.new(options)
 
-    assert_equal "D1CFE8833A297D0922E908B2B44934B09EE966EF1584DC0D696304E07BB58BA71973C2383C831D878D8A243BB7D7DFFFBE53CEE21955CDFEF44FE82E551F859D", request.shasign 
+    assert_equal "D1CFE8833A297D0922E908B2B44934B09EE966EF1584DC0D696304E07BB58BA71973C2383C831D878D8A243BB7D7DFFFBE53CEE21955CDFEF44FE82E551F859D", request.signature
   end
 
   test "form_attributes" do
@@ -79,14 +79,14 @@ class RequestTest < Test::Unit::TestCase
   test "request_url in test mode" do
     EPDQ.test_mode = true
     request = EPDQ::Request.new
-    
+
     assert_equal EPDQ::Request::TEST_URL, request.request_url
   end
 
   test "request_url in live mode" do
     EPDQ.test_mode = false
     request = EPDQ::Request.new
-    
+
     assert_equal EPDQ::Request::LIVE_URL, request.request_url
   end
 
